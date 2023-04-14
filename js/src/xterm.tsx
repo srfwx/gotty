@@ -5,6 +5,26 @@ import { WebglAddon } from 'xterm-addon-webgl';
 import { Unicode11Addon } from 'xterm-addon-unicode11';
 import { ZModemAddon } from "./zmodem";
 
+export interface ICmdSetTitle {
+    command: "set_title";
+    arg: string;
+}
+
+export interface ICmdRefresh {
+    command: "refresh";
+}
+
+export interface ICmdRedirect {
+    command: "redirect";
+    arg: string;
+}
+
+export interface ICmdCleanUrl {
+    command: "clean_url";
+}
+
+export type ICommand = ICmdSetTitle | ICmdRefresh | ICmdRedirect | ICmdCleanUrl;
+
 
 const termOptions = {
     fontSize: 17,
@@ -12,6 +32,8 @@ const termOptions = {
     macOptionClickForcesSelection: true,
     macOptionIsMeta: true,
     allowProposedApi: true,
+    smoothScrollDuration: 0,
+    scrollSensitivity: 8,
     theme: {
         foreground: '#d4d4d4',
         background: '#2e3131',
@@ -69,6 +91,33 @@ export class OurXterm {
         this.term.loadAddon(this.zmodemAddon);
         this.term.loadAddon(new Unicode11Addon())
         this.term.unicode.activeVersion = "11";
+
+        this.term.onTitleChange((value) => {
+            try {
+                const cmd = JSON.parse(value);
+                if(typeof cmd !== "object") {
+                    throw new Error("Expected object, got " + typeof cmd);
+                }
+                const { command, arg } = cmd;
+                switch (command) {
+                    case "set_title":
+                        document.title = arg;
+                        break
+                    case "refresh":
+                        location.reload();
+                        break;
+                    case "redirect":
+                        // TODO
+                        break;
+                    case "clean_url":
+                        // TODO
+                        break;
+                }
+            } catch (e) {
+                console.debug("Invalid command", value);
+            }
+
+        })
 
         this.message = elem.ownerDocument.createElement("div");
         this.message.className = "xterm-overlay";
