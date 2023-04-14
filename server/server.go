@@ -10,6 +10,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 	noesctmpl "text/template"
@@ -140,6 +141,14 @@ func (server *Server) Run(ctx context.Context, options ...RunOption) error {
 		return errors.Wrapf(err, "failed to listen at `%s`", hostPort)
 	}
 
+	ssoUrl := server.options.SSOUrl
+	if ssoUrl != "" {
+		_, err := url.ParseRequestURI(ssoUrl)
+		if err != nil {
+			return errors.Wrapf(err, "Invalid SSO URL: %s", ssoUrl)
+		}
+	}
+
 	scheme := "http"
 	if server.options.EnableTLS {
 		scheme = "https"
@@ -228,7 +237,37 @@ func (server *Server) setupHandlers(ctx context.Context, cancel context.CancelFu
 	siteHandler = server.wrapLogger(withGz)
 
 	wsMux := http.NewServeMux()
-	wsMux.Handle("/", siteHandler)
+
+	ssoUrl := server.options.SSOUrl
+	ssoTokenKeyName := server.options.TokenKeyName
+	if ssoUrl != "" {
+		log.Printf("Using SSO redirect to " + ssoUrl)
+		wsMux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// if r.URL.Path == "/" && r.URL.RawQuery == "" {p
+			if r.URL.Path == "/" && r.URL.Query().Get(ssoTokenKeyName) == "" {
+				http.Redirect(w, r, ssoUrl, http.StatusSeeOther)
+				return
+			}
+			siteMux.ServeHTTP(w, r)
+		}))
+		wsMux.Handle("/sso-login/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			u := r.URL
+			queryValues := u.Query()
+			// check if SSO Token passed in Query
+			if queryValues.Get(ssoTokenKeyName) == "" {
+				// we could also redirect, but risk and endless redirect loop?
+				http.Error(w, "Missing or empty "+ssoTokenKeyName, http.StatusBadRequest)
+				return
+			}
+			u.RawQuery = queryValues.Encode()
+			// clear path for redirecting to server root
+			u.Path = ""
+			http.Redirect(w, r, u.String(), http.StatusSeeOther)
+		}))
+	} else {
+		wsMux.Handle("/", siteHandler)
+	}
+
 	wsMux.HandleFunc(pathPrefix+"ws", server.generateHandleWS(ctx, cancel, counter))
 	siteHandler = http.Handler(wsMux)
 

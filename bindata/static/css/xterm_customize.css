@@ -6,7 +6,7 @@
     font-family: "DejaVu Sans Mono", "Everson Mono", FreeMono, Menlo, Terminal, monospace, "Apple Symbols";
     border-radius: 15px;
     font-size: xx-large;
-    color: black;
+    color: grey;
     background: white;
     opacity: 0.75;
     padding: 0.2em 0.5em 0.2em 0.5em;
@@ -16,4 +16,8 @@
     transform: translate(-50%, -50%);
     user-select: none;
     transition: opacity 180ms ease-in;
+}
+
+.terminal-cursor {
+    background-color: rgba(236, 236, 236, 1);
 }
