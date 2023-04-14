@@ -27,6 +27,13 @@ assets: bindata/static/js/gotty.js.map \
 	bindata/static/css/index.css \
 	bindata/static/css/xterm.css \
 	bindata/static/css/xterm_customize.css \
+	bindata/static/css/fonts.css \
+	bindata/static/css/SourceCodeVF-Italic.ttf \
+	bindata/static/css/SourceCodeVF-Italic.ttf.woff \
+	bindata/static/css/SourceCodeVF-Italic.ttf.woff2 \
+	bindata/static/css/SourceCodeVF-Upright.ttf \
+	bindata/static/css/SourceCodeVF-Upright.ttf.woff \
+	bindata/static/css/SourceCodeVF-Upright.ttf.woff2 \
 	bindata/static/manifest.json \
 	bindata/static/icon_192.png
 
@@ -38,7 +45,19 @@ bindata/static bindata/static/css bindata/static/js:
 bindata/static/%: resources/% | bindata/static/css 
 	cp "$<" "$@"
 
-bindata/static/css/%.css: resources/%.css | bindata/static 
+bindata/static/css/%.css: resources/%.css | bindata/static
+	cp "$<" "$@"
+
+bindata/static/css/fonts.css: resources/fonts/fonts.css | bindata/static/css
+	cp "$<" "$@"
+
+bindata/static/css/%.ttf: resources/fonts/%.ttf | bindata/static/css
+	cp "$<" "$@"
+
+bindata/static/css/%.woff: resources/fonts/%.woff | bindata/static/css
+	cp "$<" "$@"
+
+bindata/static/css/%.woff2: resources/fonts/%.woff2 | bindata/static/css
 	cp "$<" "$@"
 
 bindata/static/css/xterm.css: js/node_modules/xterm/css/xterm.css | bindata/static

@@ -6,14 +6,14 @@ import { ZModemAddon } from "./zmodem";
 
 
 const termOptions = {
-    fontSize: 13,
-    fontFamily: "'Source Code Pro', 'Noto Color Emoji', 'DejaVu Sans Mono', 'Everson Mono', FreeMono, 'Menlo', 'Terminal', monospace",
+    fontSize: 17,
+    fontFamily: "'Source Code Variable', 'Noto Color Emoji', 'DejaVu Sans Mono', 'Everson Mono', FreeMono, 'Menlo', 'Terminal', monospace",
     macOptionClickForcesSelection: true,
     macOptionIsMeta: true,
     theme: {
         foreground: '#d4d4d4',
-        background: '#1e1e1e',
-        cursor: '#adadad',
+        background: '#2e3131',
+        cursor: '#ececec',
         black: '#2e3030',
         red: '#d81e00',
         green: '#5ea702',
