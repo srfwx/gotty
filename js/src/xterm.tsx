@@ -2,6 +2,7 @@ import { Terminal, IDisposable, ITerminalOptions, ITheme } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { WebglAddon } from 'xterm-addon-webgl';
+import { Unicode11Addon } from 'xterm-addon-unicode11';
 import { ZModemAddon } from "./zmodem";
 
 
@@ -10,6 +11,7 @@ const termOptions = {
     fontFamily: "'Source Code Variable', 'Noto Color Emoji', 'DejaVu Sans Mono', 'Everson Mono', FreeMono, 'Menlo', 'Terminal', monospace",
     macOptionClickForcesSelection: true,
     macOptionIsMeta: true,
+    allowProposedApi: true,
     theme: {
         foreground: '#d4d4d4',
         background: '#2e3131',
@@ -65,6 +67,8 @@ export class OurXterm {
         this.term.loadAddon(new WebLinksAddon());
         this.term.loadAddon(this.fitAddOn);
         this.term.loadAddon(this.zmodemAddon);
+        this.term.loadAddon(new Unicode11Addon())
+        this.term.unicode.activeVersion = "11";
 
         this.message = elem.ownerDocument.createElement("div");
         this.message.className = "xterm-overlay";
