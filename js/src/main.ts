@@ -26,4 +26,5 @@ if (elem !== null) {
         closer();
         term.close();
     });
-};
+    history.replaceState({}, "", location.origin);
+}

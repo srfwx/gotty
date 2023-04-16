@@ -19,11 +19,7 @@ export interface ICmdRedirect {
     arg: string;
 }
 
-export interface ICmdCleanUrl {
-    command: "clean_url";
-}
-
-export type ICommand = ICmdSetTitle | ICmdRefresh | ICmdRedirect | ICmdCleanUrl;
+export type ICommand = ICmdSetTitle | ICmdRefresh | ICmdRedirect;
 
 
 const termOptions = {
@@ -107,10 +103,7 @@ export class OurXterm {
                         location.reload();
                         break;
                     case "redirect":
-                        // TODO
-                        break;
-                    case "clean_url":
-                        // TODO
+                        location.replace(arg);
                         break;
                 }
             } catch (e) {
