@@ -28,8 +28,9 @@ const termOptions = {
     macOptionClickForcesSelection: true,
     macOptionIsMeta: true,
     allowProposedApi: true,
-    smoothScrollDuration: 0,
-    scrollSensitivity: 8,
+    scrollback: 10000,
+    smoothScrollDuration: 125,
+    scrollSensitivity: 1,
     theme: {
         foreground: '#d4d4d4',
         background: '#2e3131',
@@ -91,7 +92,7 @@ export class OurXterm {
         this.term.onTitleChange((value) => {
             try {
                 const cmd = JSON.parse(value);
-                if(typeof cmd !== "object") {
+                if (typeof cmd !== "object") {
                     throw new Error("Expected object, got " + typeof cmd);
                 }
                 const { command, arg } = cmd;
