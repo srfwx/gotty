@@ -29,8 +29,10 @@ const termOptions = {
     macOptionIsMeta: true,
     allowProposedApi: true,
     scrollback: 10000,
-    smoothScrollDuration: 125,
-    scrollSensitivity: 1,
+    smoothScrollDuration: 0,
+    // fastScrollSensitivity: 1,
+    scrollSensitivity: 0.5,
+    mouseWheelScrollSensitivity: 0.25,
     theme: {
         foreground: '#d4d4d4',
         background: '#2e3131',
