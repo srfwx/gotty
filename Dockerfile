@@ -14,6 +14,6 @@ RUN CGO_ENABLED=0 make
 FROM docker:cli
 RUN apk update && \
     apk upgrade && \
-    apk --no-cache add ca-certificates bash
+    apk --no-cache add ca-certificates bash curl
 COPY --from=go-build /gotty/gotty /usr/bin/
 ENTRYPOINT ["gotty"]
