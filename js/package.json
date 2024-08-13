@@ -2,9 +2,6 @@
   "name": "gotty",
   "version": "1.4.0",
   "private": true,
-  "scripts": {
-    "dev": "DEV=1 npx webpack serve --no-open --mode=development"
-  },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
     "compression-webpack-plugin": "^9.2.0",

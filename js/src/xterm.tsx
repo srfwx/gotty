@@ -34,8 +34,8 @@ const termOptions = {
   smoothScrollDuration: 0,
   // fastScrollSensitivity: 1,
   scrollSensitivity: 0.5,
-//  scrollOnUserInput: true,
-//  mouseWheelScrollSensitivity: 0.25, // FIXME: not suported anymore
+  scrollOnUserInput: true,
+  // mouseWheelScrollSensitivity: 0.25, // FIXME: not suported anymore
   theme: {
     foreground: '#d4d4d4',
     background: '#2e3131',
