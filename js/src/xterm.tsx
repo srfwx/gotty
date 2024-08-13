@@ -1,4 +1,5 @@
-import {Terminal, IDisposable, ITerminalOptions, ITheme} from "xterm";
+import type {Terminal as WTerminal} from './webtty';
+import {Terminal, IDisposable, ITerminalOptions} from "@xterm/xterm";
 import {FitAddon} from '@xterm/addon-fit';
 import {WebLinksAddon} from '@xterm/addon-web-links';
 import {WebglAddon} from '@xterm/addon-webgl';
@@ -33,7 +34,8 @@ const termOptions = {
   smoothScrollDuration: 0,
   // fastScrollSensitivity: 1,
   scrollSensitivity: 0.5,
-  mouseWheelScrollSensitivity: 0.25,
+//  scrollOnUserInput: true,
+//  mouseWheelScrollSensitivity: 0.25, // FIXME: not suported anymore
   theme: {
     foreground: '#d4d4d4',
     background: '#2e3131',
@@ -54,10 +56,10 @@ const termOptions = {
     brightMagenta: '#bc94b7',
     brightCyan: '#37e6e8',
     brightWhite: '#f1f1f0',
-  } as ITheme,
-} as ITerminalOptions;
+  },
+} satisfies ITerminalOptions;
 
-export class OurXterm {
+export class OurXterm implements WTerminal {
   // The HTMLElement that contains our terminal
   elem: HTMLElement;
 
@@ -88,10 +90,11 @@ export class OurXterm {
     });
     this.term.loadAddon(new WebLinksAddon());
     this.term.loadAddon(this.fitAddOn);
-    this.term.loadAddon(new ImageAddon())
+    this.term.loadAddon(new ImageAddon());
     this.term.loadAddon(this.zmodemAddon);
     this.term.loadAddon(new Unicode11Addon())
     this.term.unicode.activeVersion = "11";
+    this.term.loadAddon(new WebglAddon());
 
     this.term.onTitleChange((value) => {
       try {

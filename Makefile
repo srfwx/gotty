@@ -60,10 +60,10 @@ bindata/static/css/%.woff: resources/fonts/%.woff | bindata/static/css
 bindata/static/css/%.woff2: resources/fonts/%.woff2 | bindata/static/css
 	cp "$<" "$@"
 
-bindata/static/css/xterm.css: js/node_modules/xterm/css/xterm.css | bindata/static
+bindata/static/css/xterm.css: js/node_modules/@xterm/xterm/css/xterm.css | bindata/static
 	cp "$<" "$@"
 
-js/node_modules/xterm/dist/xterm.css:
+js/node_modules/@xterm/xterm/dist/xterm.css:
 	cd js && \
 	npm install
 
