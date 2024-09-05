@@ -146,6 +146,8 @@ export class OurXterm implements WTerminal {
   // This gets called from the Websocket's onReceive handler
   output(data: Uint8Array) {
     this.zmodemAddon.consume(data);
+    //  this.term.write(data);
+    return;
   };
 
   getMessage(): HTMLElement {

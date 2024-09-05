@@ -7,9 +7,7 @@ declare var gotty_auth_token: string;
 declare var gotty_term: string;
 declare var gotty_ws_query_args: string;
 
-const elem = document.getElementById("terminal")
-
-if (elem !== null) {
+function render(elem: HTMLElement) {
   const term = new OurXterm(elem);
   const httpsEnabled = window.location.protocol == "https:";
   let queryArgs = "";
@@ -39,3 +37,12 @@ if (elem !== null) {
   });
   history.replaceState({}, "", location.origin);
 }
+
+document.fonts.ready.then(() => {
+  let elem = document.getElementById("terminal");
+  if (elem == null) {
+    alert("Missing <div id=\"terminal\" /> in body")
+    throw Error("Missing <div id=\"terminal\" /> in body")
+  }
+  render(elem);
+});
