@@ -1,11 +1,11 @@
-import type {Terminal as WTerminal} from './webtty';
-import {Terminal, IDisposable, ITerminalOptions} from "@xterm/xterm";
-import {FitAddon} from '@xterm/addon-fit';
-import {WebLinksAddon} from '@xterm/addon-web-links';
-import {WebglAddon} from '@xterm/addon-webgl';
-import {Unicode11Addon} from '@xterm/addon-unicode11';
-import {ImageAddon} from "@xterm/addon-image"
-import {ZModemAddon} from "./zmodem";
+import type { Terminal as WTerminal } from "./webtty";
+import { Terminal, IDisposable, ITerminalOptions } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
+import { WebLinksAddon } from "@xterm/addon-web-links";
+import { WebglAddon } from "@xterm/addon-webgl";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
+import { ImageAddon } from "@xterm/addon-image";
+import { ZModemAddon } from "./zmodem";
 
 export interface ICmdSetTitle {
   command: "set_title";
@@ -23,10 +23,10 @@ export interface ICmdRedirect {
 
 export type ICommand = ICmdSetTitle | ICmdRefresh | ICmdRedirect;
 
-
 const termOptions = {
   fontSize: 17,
-  fontFamily: "'Source Code Variable', 'Noto Color Emoji', 'DejaVu Sans Mono', 'Everson Mono', FreeMono, 'Menlo', 'Terminal', monospace",
+  fontFamily:
+    "'Source Code Variable', 'Noto Color Emoji', 'DejaVu Sans Mono', 'Everson Mono', FreeMono, 'Menlo', 'Terminal', monospace",
   macOptionClickForcesSelection: true,
   macOptionIsMeta: true,
   allowProposedApi: true,
@@ -37,25 +37,25 @@ const termOptions = {
   scrollOnUserInput: true,
   // mouseWheelScrollSensitivity: 0.25, // FIXME: not suported anymore
   theme: {
-    foreground: '#d4d4d4',
-    background: '#2e3131',
-    cursor: '#ececec',
-    black: '#2e3030',
-    red: '#d81e00',
-    green: '#5ea702',
-    yellow: '#cfae00',
-    blue: '#427ab3',
-    magenta: '#89658e',
-    cyan: '#00a7aa',
-    white: '#dbded8',
-    brightBlack: '#686a66',
-    brightRed: '#f54235',
-    brightGreen: '#99e343',
-    brightYellow: '#fdeb61',
-    brightBlue: '#84b0d8',
-    brightMagenta: '#bc94b7',
-    brightCyan: '#37e6e8',
-    brightWhite: '#f1f1f0',
+    foreground: "#d4d4d4",
+    background: "#2e3131",
+    cursor: "#ececec",
+    black: "#2e3030",
+    red: "#d81e00",
+    green: "#5ea702",
+    yellow: "#cfae00",
+    blue: "#427ab3",
+    magenta: "#89658e",
+    cyan: "#00a7aa",
+    white: "#dbded8",
+    brightBlack: "#686a66",
+    brightRed: "#f54235",
+    brightGreen: "#99e343",
+    brightYellow: "#fdeb61",
+    brightBlue: "#84b0d8",
+    brightMagenta: "#bc94b7",
+    brightCyan: "#37e6e8",
+    brightWhite: "#f1f1f0",
   },
 } satisfies ITerminalOptions;
 
@@ -78,7 +78,7 @@ export class OurXterm implements WTerminal {
   fitAddOn: FitAddon;
   zmodemAddon: ZModemAddon;
   toServer: (data: string | Uint8Array) => void;
-  encoder: TextEncoder
+  encoder: TextEncoder;
 
   constructor(elem: HTMLElement) {
     this.elem = elem;
@@ -86,13 +86,13 @@ export class OurXterm implements WTerminal {
     this.fitAddOn = new FitAddon();
     this.zmodemAddon = new ZModemAddon({
       toTerminal: (x: Uint8Array) => this.term.write(x),
-      toServer: (x: Uint8Array) => this.sendInput(x)
+      toServer: (x: Uint8Array) => this.sendInput(x),
     });
     this.term.loadAddon(new WebLinksAddon());
     this.term.loadAddon(this.fitAddOn);
     this.term.loadAddon(new ImageAddon());
     this.term.loadAddon(this.zmodemAddon);
-    this.term.loadAddon(new Unicode11Addon())
+    this.term.loadAddon(new Unicode11Addon());
     this.term.unicode.activeVersion = "11";
     this.term.loadAddon(new WebglAddon());
 
@@ -102,11 +102,11 @@ export class OurXterm implements WTerminal {
         if (typeof cmd !== "object") {
           throw new Error("Expected object, got " + typeof cmd);
         }
-        const {command, arg} = cmd;
+        const { command, arg } = cmd;
         switch (command) {
           case "set_title":
             document.title = arg;
-            break
+            break;
           case "refresh":
             location.reload();
             break;
@@ -117,8 +117,7 @@ export class OurXterm implements WTerminal {
       } catch (e) {
         console.debug("Invalid command", value);
       }
-
-    })
+    });
 
     this.message = elem.ownerDocument.createElement("div");
     this.message.className = "xterm-overlay";
@@ -127,7 +126,10 @@ export class OurXterm implements WTerminal {
     this.resizeListener = () => {
       this.fitAddOn.fit();
       this.term.scrollToBottom();
-      this.showMessage(String(this.term.cols) + "x" + String(this.term.rows), this.messageTimeout);
+      this.showMessage(
+        String(this.term.cols) + "x" + String(this.term.rows),
+        this.messageTimeout,
+      );
     };
 
     this.term.open(elem);
@@ -137,18 +139,18 @@ export class OurXterm implements WTerminal {
     window.addEventListener("resize", () => {
       this.resizeListener();
     });
-  };
+  }
 
-  info(): { columns: number, rows: number } {
-    return {columns: this.term.cols, rows: this.term.rows};
-  };
+  info(): { columns: number; rows: number } {
+    return { columns: this.term.cols, rows: this.term.rows };
+  }
 
   // This gets called from the Websocket's onReceive handler
   output(data: Uint8Array) {
     this.zmodemAddon.consume(data);
     //  this.term.write(data);
     return;
-  };
+  }
 
   getMessage(): HTMLElement {
     return this.message;
@@ -174,7 +176,7 @@ export class OurXterm implements WTerminal {
         }
       }, timeout);
     }
-  };
+  }
 
   removeMessage(): void {
     if (this.message.parentNode == this.elem) {
@@ -184,44 +186,44 @@ export class OurXterm implements WTerminal {
 
   setWindowTitle(title: string) {
     document.title = title;
-  };
+  }
 
   setPreferences(value: object) {
     Object.keys(value).forEach((key) => {
       if (key == "EnableWebGL" && key) {
         this.term.loadAddon(new WebglAddon());
       } else if (key == "font-size") {
-        this.term.options.fontSize = value[key]
+        this.term.options.fontSize = value[key];
       } else if (key == "font-family") {
-        this.term.options.fontFamily = value[key]
+        this.term.options.fontFamily = value[key];
       }
     });
-  };
+  }
 
   sendInput(data: Uint8Array) {
-    return this.toServer(data)
+    return this.toServer(data);
   }
 
   onInput(callback: (input: string) => void) {
-    this.encoder = new TextEncoder()
+    this.encoder = new TextEncoder();
     this.toServer = callback;
 
     // I *think* we're ok like this, but if not, we can dispose
     // of the previous handler and put the new one in place.
     if (this.onDataHandler !== undefined) {
-      return
+      return;
     }
 
     this.onDataHandler = this.term.onData((input) => {
       this.toServer(this.encoder.encode(input));
     });
-  };
+  }
 
   onResize(callback: (colmuns: number, rows: number) => void) {
     this.onResizeHandler = this.term.onResize(() => {
       callback(this.term.cols, this.term.rows);
     });
-  };
+  }
 
   deactivate(): void {
     this.onDataHandler.dispose();
