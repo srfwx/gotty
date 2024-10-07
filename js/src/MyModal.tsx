@@ -1,5 +1,5 @@
-import { createRef, Component, ComponentChildren } from "preact";
-import { Modal } from "bootstrap";
+import {createRef, Component, ComponentChildren} from "preact";
+import {Modal} from "bootstrap";
 import './bootstrap.scss';
 import './style.scss';
 
@@ -19,7 +19,9 @@ export class MyModal extends Component<ModalProps, {}> {
 
   componentDidMount() {
     Modal.getOrCreateInstance(this.ref.current!).show();
-    this.ref.current?.addEventListener('hide.bs.modal', () => { this.props.dismissHandler && this.props.dismissHandler(); });
+    this.ref.current?.addEventListener('hide.bs.modal', () => {
+      this.props.dismissHandler && this.props.dismissHandler();
+    });
   }
 
   componentWillUnmount() {
@@ -36,7 +38,8 @@ export class MyModal extends Component<ModalProps, {}> {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">{this.props.title}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
           </div>
           <div class="modal-body">
             {this.props.children}
@@ -60,5 +63,7 @@ interface ButtonProps {
 export function Button(props: ButtonProps) {
   let classes: string = "btn btn-" + props.priority
 
-  return <button type="button" disabled={props.disabled} class={classes} onClick={() => { props.clickHandler ? props.clickHandler() : null; }}>{props.children}</button>
+  return <button type="button" disabled={props.disabled} class={classes} onClick={() => {
+    props.clickHandler ? props.clickHandler() : null;
+  }}>{props.children}</button>
 }

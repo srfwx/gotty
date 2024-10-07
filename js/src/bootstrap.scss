@@ -1,4 +1,5 @@
 @import "mixins/banner";
+
 @include bsBanner("");
 
 
@@ -6,6 +7,7 @@
 // Configuration
 @import "functions";
 @import "variables";
+@import "variables-dark";
 @import "maps";
 @import "mixins";
 @import "utilities";
