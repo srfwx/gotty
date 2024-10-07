@@ -1,25 +1,24 @@
 export const protocols = ["webtty"];
 
-export const msgInputUnknown = '0';
-export const msgInput = '1';
-export const msgPing = '2';
-export const msgResizeTerminal = '3';
-export const msgSetEncoding = '4';
+export const msgInputUnknown = "0";
+export const msgInput = "1";
+export const msgPing = "2";
+export const msgResizeTerminal = "3";
+export const msgSetEncoding = "4";
 
-export const msgUnknownOutput = '0';
-export const msgOutput = '1';
-export const msgPong = '2';
-export const msgSetWindowTitle = '3';
-export const msgSetPreferences = '4';
-export const msgSetReconnect = '5';
-export const msgSetBufferSize = '6';
-
+export const msgUnknownOutput = "0";
+export const msgOutput = "1";
+export const msgPong = "2";
+export const msgSetWindowTitle = "3";
+export const msgSetPreferences = "4";
+export const msgSetReconnect = "5";
+export const msgSetBufferSize = "6";
 
 export interface Terminal {
   /*
    * Get dimensions of the terminal
    */
-  info(): { columns: number, rows: number };
+  info(): { columns: number; rows: number };
 
   /*
    * Process output from the server side
@@ -40,7 +39,6 @@ export interface Terminal {
    */
   removeMessage(): void;
 
-
   /*
    * Set window title
    */
@@ -51,7 +49,6 @@ export interface Terminal {
    */
   setPreferences(value: object): void;
 
-
   /*
    * Sets an input (e.g. user types something) handler
    */
@@ -60,7 +57,7 @@ export interface Terminal {
   /*
    * Sets a resize handler
    */
-  onResize(callback: (colmuns: number, rows: number) => void): void;
+  onResize(callback: (columns: number, rows: number) => void): void;
 
   reset(): void;
 
@@ -132,14 +129,23 @@ export class WebTTY {
    */
   bufSize: number;
 
-  constructor(term: Terminal, connectionFactory: ConnectionFactory, args: string, authToken: string) {
+  constructor(
+    term: Terminal,
+    connectionFactory: ConnectionFactory,
+    args: string,
+    authToken: string,
+  ) {
     this.term = term;
     this.connectionFactory = connectionFactory;
     this.args = args;
     this.authToken = authToken;
     this.reconnect = -1;
     this.bufSize = 1024;
-  };
+  }
+
+  get isOpen(): boolean {
+    return this.connection.isOpen();
+  }
 
   open() {
     let connection = this.connectionFactory.create();
@@ -161,14 +167,12 @@ export class WebTTY {
 
         this.sendSetEncoding("base64");
 
-        this.term.onInput(
-          (input: string | Uint8Array) => {
-            this.sendInput(input);
-          }
-        );
+        this.term.onInput((input: string | Uint8Array) => {
+          this.sendInput(input);
+        });
 
         pingTimer = setInterval(() => {
-          this.sendPing()
+          this.sendPing();
         }, 30 * 1000);
       });
 
@@ -176,7 +180,9 @@ export class WebTTY {
         const payload = data.slice(1);
         switch (data[0]) {
           case msgOutput:
-            this.term.output(Uint8Array.from(atob(payload), c => c.charCodeAt(0)));
+            this.term.output(
+              Uint8Array.from(atob(payload), (c) => c.charCodeAt(0)),
+            );
             break;
           case msgPong:
             break;
@@ -189,7 +195,7 @@ export class WebTTY {
             break;
           case msgSetReconnect:
             const autoReconnect = JSON.parse(payload);
-            console.log("Enabling reconnect: " + autoReconnect + " seconds")
+            console.log("Enabling reconnect: " + autoReconnect + " seconds");
             this.reconnect = autoReconnect;
             break;
           case msgSetBufferSize:
@@ -213,43 +219,46 @@ export class WebTTY {
       });
 
       connection.open();
-    }
+    };
 
     setup();
     return () => {
       clearTimeout(reconnectTimeout);
       connection.close();
-    }
-  };
+    };
+  }
 
   private initializeConnection(args, authToken) {
-    this.connection.send(JSON.stringify(
-      {
+    this.connection.send(
+      JSON.stringify({
         Arguments: args,
         AuthToken: authToken,
-      }
-    ));
+      }),
+    );
   }
 
   /*
    * sendInput sends data to the server. It accepts strings or Uint8Arrays.
    * strings will be encoded as UTF-8. Uint8Arrays are passed along as-is.
    */
-  private sendInput(input: string | Uint8Array) {
+  sendInput(input: string | Uint8Array) {
     let effectiveBufferSize = this.bufSize - 1;
     let dataString: string;
 
     if (typeof input === "string") {
       dataString = input;
     } else {
-      dataString = String.fromCharCode(...input)
+      dataString = String.fromCharCode(...input);
     }
 
     // Account for base64 encoding
     let maxChunkSize = Math.floor(effectiveBufferSize / 4) * 3;
 
     for (let i = 0; i < Math.ceil(dataString.length / maxChunkSize); i++) {
-      let inputChunk = dataString.substring(i * maxChunkSize, Math.min((i + 1) * maxChunkSize, dataString.length))
+      let inputChunk = dataString.substring(
+        i * maxChunkSize,
+        Math.min((i + 1) * maxChunkSize, dataString.length),
+      );
       this.connection.send(msgInput + btoa(inputChunk));
     }
   }
@@ -258,19 +267,17 @@ export class WebTTY {
     this.connection.send(msgPing);
   }
 
-  private sendResizeTerminal(colmuns: number, rows: number) {
+  private sendResizeTerminal(columns: number, rows: number) {
     this.connection.send(
-      msgResizeTerminal + JSON.stringify(
-        {
-          columns: colmuns,
-          rows: rows
-        }
-      )
+      msgResizeTerminal +
+        JSON.stringify({
+          columns,
+          rows,
+        }),
     );
   }
 
   private sendSetEncoding(encoding: "base64" | "null") {
-    this.connection.send(msgSetEncoding + encoding)
+    this.connection.send(msgSetEncoding + encoding);
   }
-
-};
+}
