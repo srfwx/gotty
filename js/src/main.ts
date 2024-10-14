@@ -1,7 +1,7 @@
 import { ConnectionFactory } from "./websocket";
 import { protocols, WebTTY } from "./webtty";
 import { OurXterm } from "./xterm";
-import { MessageRouter } from "./MessageRouter";
+import { MessageRouter } from "./message_router";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
@@ -59,25 +59,28 @@ function main() {
   if (window === window.parent) {
     return; // not listening if we're not in an iframe
   }
-  const messageRouter = new MessageRouter(webTTY);
 
-  messageRouter.post<string[]>("/command", (req, res) => {
-    if (req.body) {
-      for (const command of req.body) {
-        res.send(`${command}\n`);
+  const router = new MessageRouter();
+
+  router
+    .post<string[]>("/command", (req, res) => {
+      if (req.body) {
+        for (const command of req.body) {
+          webTTY.term.scrollToBottom();
+          webTTY.sendInput(`${command}\n`);
+        }
       }
-    }
-  });
-
-  messageRouter.del("/connection", (req, res) => {
-    closer();
-  });
-
-  messageRouter.get<{ open: boolean }>("/connection", (req, res) => {
-    res.data({ open: res.webTTY.isOpen });
-  });
-
-  messageRouter.listen();
+    })
+    .post("/focus", (req, res) => {
+      webTTY.term.focus();
+    })
+    .del("/connection", (req, res) => {
+      closer();
+    })
+    .get<{ open: boolean }>("/connection", (req, res) => {
+      res.data({ open: webTTY.isOpen });
+    })
+    .listen();
 }
 
 document.fonts.ready.then((fonts) => {

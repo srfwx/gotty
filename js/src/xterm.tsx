@@ -252,4 +252,8 @@ export class OurXterm implements WTerminal {
   focus(): void {
     this.term.focus();
   }
+
+  scrollToBottom() {
+    this.term.scrollToBottom();
+  }
 }

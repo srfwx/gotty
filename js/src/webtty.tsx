@@ -64,6 +64,10 @@ export interface Terminal {
   deactivate(): void;
 
   close(): void;
+
+  focus(): void;
+
+  scrollToBottom(): void;
 }
 
 export interface Connection {
