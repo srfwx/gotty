@@ -80,6 +80,9 @@ function main() {
     .get<{ open: boolean }>("/connection", (req, res) => {
       res.data({ open: webTTY.isOpen });
     })
+    .get<{ app: string }>("/status", (req, res) => {
+      res.data({ app: "toolbox" });
+    })
     .listen();
 }
 

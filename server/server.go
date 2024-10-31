@@ -221,6 +221,7 @@ func (server *Server) setupHandlers(ctx context.Context, cancel context.CancelFu
   siteMux.Handle(pathPrefix+"icon.svg", http.StripPrefix(pathPrefix, staticFileHandler))
   siteMux.Handle(pathPrefix+"css/", http.StripPrefix(pathPrefix, staticFileHandler))
   siteMux.Handle(pathPrefix+"icon_192.png", http.StripPrefix(pathPrefix, staticFileHandler))
+  siteMux.Handle(pathPrefix+"check_ssl.html", http.StripPrefix(pathPrefix, staticFileHandler))
 
   siteMux.HandleFunc(pathPrefix+"manifest.json", server.handleManifest)
   siteMux.HandleFunc(pathPrefix+"auth_token.js", server.handleAuthToken)
