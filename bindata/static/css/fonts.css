@@ -17,3 +17,11 @@
         url('./SourceCodeVF-Italic.ttf.woff') format('woff'),
         url('./SourceCodeVF-Italic.ttf') format('truetype');
 }
+
+@font-face {
+    font-family: 'Noto Color Emoji';
+    font-weight: 400;
+    font-style: normal;
+    src: url('./noto-color-emoji_5.1.0_emoji-400-normal.woff2') format('woff2'),
+        url('./NotoColorEmoji-Regular.ttf') format('truetype');
+}

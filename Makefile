@@ -35,6 +35,8 @@ assets: bindata/static/js/gotty.js.map \
 	bindata/static/css/SourceCodeVF-Upright.ttf \
 	bindata/static/css/SourceCodeVF-Upright.ttf.woff \
 	bindata/static/css/SourceCodeVF-Upright.ttf.woff2 \
+	bindata/static/css/NotoColorEmoji-Regular.ttf \
+	bindata/static/css/noto-color-emoji_5.1.0_emoji-400-normal.woff2 \
 	bindata/static/manifest.json \
 	bindata/static/icon_192.png
 
