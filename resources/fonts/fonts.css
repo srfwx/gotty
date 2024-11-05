@@ -1,5 +1,5 @@
 @font-face {
-    font-family: 'Source Code Variable';
+    font-family: 'emg_source_code';
     font-weight: 200 900;
     font-style: normal;
     font-stretch: normal;
@@ -9,7 +9,7 @@
 }
 
 @font-face {
-    font-family: 'Source Code Variable';
+    font-family: 'emg_source_code_italic';
     font-weight: 200 900;
     font-style: italic;
     font-stretch: normal;
@@ -19,7 +19,7 @@
 }
 
 @font-face {
-    font-family: 'Noto Color Emoji';
+    font-family: 'emg_emoji';
     font-weight: 400;
     font-style: normal;
     src: url('./noto-color-emoji_5.1.0_emoji-400-normal.woff2') format('woff2'),

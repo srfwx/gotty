@@ -18,5 +18,5 @@ echo -e "\e[4munderline 123 >🙂< \e[0m"
 echo -e "\e[9mstrikethrough 123 >🙂< \e[0m"
 echo -e "\e[31mHello World 123 >🙂< \e[0m"
 echo -e "\x1B[31mHello World 123 >🙂< \e[0m"
-
-#bash
+echo -e " For example: \e[3m show session --last \"10min\" \e[0m or"
+bash

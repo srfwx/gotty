@@ -25,8 +25,7 @@ export type ICommand = ICmdSetTitle | ICmdRefresh | ICmdRedirect;
 
 const termOptions = {
   fontSize: 17,
-  fontFamily:
-    "'Source Code Variable', 'Noto Color Emoji', 'DejaVu Sans Mono', 'Everson Mono', FreeMono, 'Menlo', 'Terminal', monospace",
+  fontFamily: "emg_source_code, emg_source_code_italic, emg_emoji",
   macOptionClickForcesSelection: true,
   macOptionIsMeta: true,
   allowProposedApi: true,
