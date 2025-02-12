@@ -8,6 +8,9 @@ declare var gotty_auth_token: string;
 declare var gotty_term: string;
 declare var gotty_ws_query_args: string;
 declare var PRODUCTION: boolean;
+declare var GOTTY_VERSION: string;
+
+console.debug("gotty:version:", GOTTY_VERSION);
 
 function render(elem: HTMLElement): [WebTTY, () => void] {
   const term = new OurXterm(elem);
@@ -16,16 +19,15 @@ function render(elem: HTMLElement): [WebTTY, () => void] {
   try {
     queryArgs = gotty_ws_query_args === "" ? "" : "?" + gotty_ws_query_args;
   } catch (e) {
-    console.error("Error getting gotty_ws_query_args", e);
+    console.error("gotty:render:error getting gotty_ws_query_args", e);
   }
   let authToken = "";
   try {
     authToken = gotty_auth_token;
   } catch (e) {
-    console.error("Error getting gotty_auth_token", e);
+    console.error("gotty:render:error getting gotty_auth_token", e);
   }
-  const url =
-    (httpsEnabled ? "wss://" : "ws://") +
+  const url = (httpsEnabled ? "wss://" : "ws://") +
     window.location.host +
     window.location.pathname +
     "ws" +
@@ -56,17 +58,18 @@ function main() {
   if (!PRODUCTION) {
     globalThis.webTTY = webTTY;
   }
-  if (window === window.parent) {
-    return; // not listening if we're not in an iframe
-  }
-
   const router = new MessageRouter();
-
+  if (window !== window.parent) {
+    router.listen();
+  }
   router
+    .get<{ app: string }>("/status", (req, res) => {
+      res.data({ app: "toolbox" });
+    })
     .post<string[]>("/command", (req, res) => {
       if (req.body) {
+        webTTY.term.scrollToBottom();
         for (const command of req.body) {
-          webTTY.term.scrollToBottom();
           webTTY.sendInput(`${command}\n`);
         }
       }
@@ -79,16 +82,14 @@ function main() {
     })
     .get<{ open: boolean }>("/connection", (req, res) => {
       res.data({ open: webTTY.isOpen });
-    })
-    .get<{ app: string }>("/status", (req, res) => {
-      res.data({ app: "toolbox" });
-    })
-    .listen();
+    });
 }
+
 
 document.fonts.ready.then((fonts) => {
   fonts.forEach((font) =>
-    console.debug("loaded font:", font.family, font.style, font.weight),
+    console.debug("gotty:loaded font:", font.family, font.style, font.weight)
   );
   main();
+  console.debug("gotty:READY");
 });

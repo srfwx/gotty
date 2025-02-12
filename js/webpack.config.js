@@ -4,13 +4,13 @@ const LicenseWebpackPlugin =
   require("license-webpack-plugin").LicenseWebpackPlugin;
 const webpack = require("webpack");
 
-var devtool;
+const plugins = {
+  PRODUCTION: process.env.DEV !== "1",
+  GOTTY_VERSION: JSON.stringify(process.env.VERSION ?? "9.9.9"),
+};
+console.table(plugins)
 
-if (process.env.DEV === "1") {
-  devtool = "inline-source-map";
-} else {
-  devtool = "source-map";
-}
+const devtool = process.env.DEV === "1" ? "inline-source-map" : "source-map";
 
 module.exports = {
   entry: {
@@ -19,15 +19,13 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "../bindata/static/js/"),
   },
-  devtool: devtool,
+  devtool,
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
     new LicenseWebpackPlugin(),
-    new webpack.DefinePlugin({
-      PRODUCTION: process.env.DEV !== "1",
-    }),
+    new webpack.DefinePlugin(plugins),
   ],
   module: {
     rules: [
