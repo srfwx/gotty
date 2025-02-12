@@ -67,6 +67,7 @@ export class MessageRouter implements IRouter {
     path: string,
     routeHandler: IRouteHandler<null, Response>,
   ): this {
+    console.debug(`gotty:MessageRouter:add route:get:${path}`);
     this._routeHandlers.get[path] = routeHandler;
     return this;
   }
@@ -75,6 +76,7 @@ export class MessageRouter implements IRouter {
     path: string,
     routeHandler: IRouteHandler<Args, Response>,
   ): this {
+    console.debug(`gotty:MessageRouter:add route:post:${path}`);
     this._routeHandlers.post[path] = routeHandler;
     return this;
   }
@@ -83,6 +85,7 @@ export class MessageRouter implements IRouter {
     path: string,
     routeHandler: IRouteHandler<Request, Response>,
   ): this {
+    console.debug(`gotty:MessageRouter:add route:put:${path}`);
     this._routeHandlers.put[path] = routeHandler;
     return this;
   }
@@ -92,6 +95,7 @@ export class MessageRouter implements IRouter {
     routeHandler: IRouteHandler<null, Response>,
   ): this {
     this._routeHandlers.delete[path] = routeHandler;
+    console.debug(`gotty:MessageRouter:add route:del:${path}`);
     return this;
   }
 
@@ -99,7 +103,7 @@ export class MessageRouter implements IRouter {
     window.addEventListener("message", this._listener.bind(this), {
       passive: true,
     });
-    console.log("Listening incoming messages");
+    console.debug("gotty:MessageRouter:listen()");
     return () => window.removeEventListener("message", this._listener);
   }
 
@@ -121,6 +125,7 @@ export class MessageRouter implements IRouter {
     } else {
       res.status(404).error("not found");
     }
+    console.debug(`gotty:MessageRouter:${method.toLowerCase()}:${path}:${res.getStatus()}`);
     return res;
   }
 

@@ -13,7 +13,24 @@ html, body, #terminal {
 }
 
 .font_loader {
-    font-family: "Source Code Variable";
+    position: absolute;
+    opacity: 0;
+}
+
+.font_loader_source_code {
+    font-family: "emg_source_code";
+    position: absolute;
+    opacity: 0;
+}
+
+.font_loader_source_code_italic {
+    font-family: "emg_source_code_italic";
+    position: absolute;
+    opacity: 0;
+}
+
+.font_loader_emoji {
+    font-family: "emg_emoji";
     position: absolute;
     opacity: 0;
 }

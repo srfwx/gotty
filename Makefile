@@ -1,7 +1,8 @@
 OUTPUT_DIR = ./builds
 GIT_COMMIT = `git rev-parse HEAD | cut -c1-7`
-VERSION = $(shell git describe --tags)
-BUILD_OPTIONS = -ldflags "-X main.Version=$(VERSION)"
+VERSION = $(shell grep Version version.go | sed 's/\(^.*"\)\(.*\)\("\)/\2/g')
+BUILD_OPTIONS = -ldflags "-X main.Version=${VERSION}"
+
 
 ifeq ($(DEV), 1)
 	BUILD_OPTIONS += -tags dev
@@ -29,13 +30,8 @@ assets: bindata/static/js/gotty.js.map \
 	bindata/static/css/xterm.css \
 	bindata/static/css/xterm_customize.css \
 	bindata/static/css/fonts.css \
-	bindata/static/css/SourceCodeVF-Italic.ttf \
-	bindata/static/css/SourceCodeVF-Italic.ttf.woff \
 	bindata/static/css/SourceCodeVF-Italic.ttf.woff2 \
-	bindata/static/css/SourceCodeVF-Upright.ttf \
-	bindata/static/css/SourceCodeVF-Upright.ttf.woff \
 	bindata/static/css/SourceCodeVF-Upright.ttf.woff2 \
-	bindata/static/css/NotoColorEmoji-Regular.ttf \
 	bindata/static/css/noto-color-emoji_5.1.0_emoji-400-normal.woff2 \
 	bindata/static/manifest.json \
 	bindata/static/icon_192.png
@@ -54,12 +50,6 @@ bindata/static/css/%.css: resources/%.css | bindata/static
 bindata/static/css/fonts.css: resources/fonts/fonts.css | bindata/static/css
 	cp "$<" "$@"
 
-bindata/static/css/%.ttf: resources/fonts/%.ttf | bindata/static/css
-	cp "$<" "$@"
-
-bindata/static/css/%.woff: resources/fonts/%.woff | bindata/static/css
-	cp "$<" "$@"
-
 bindata/static/css/%.woff2: resources/fonts/%.woff2 | bindata/static/css
 	cp "$<" "$@"
 
@@ -72,7 +62,7 @@ js/node_modules/@xterm/xterm/dist/xterm.css:
 
 bindata/static/js/gotty.js.map bindata/static/js/gotty.js: js/src/* | js/node_modules/webpack
 	cd js && \
-	npx webpack --mode=$(WEBPACK_MODE)
+	VERSION=${VERSION} npx webpack --mode=$(WEBPACK_MODE)
 
 js/node_modules/webpack:
 	cd js && \

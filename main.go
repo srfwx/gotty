@@ -104,7 +104,7 @@ func main() {
 		ctx, cancel := context.WithCancel(context.Background())
 		gCtx, gCancel := context.WithCancel(context.Background())
 
-		log.Printf("GoTTY is starting with command: %s", strings.Join(args.Slice(), " "))
+		log.Printf("GoTTY %s is starting with command: %s", app.Version, strings.Join(args.Slice(), " "))
 
 		errs := make(chan error, 1)
 		go func() {
