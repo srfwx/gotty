@@ -1,3 +1,6 @@
+html {
+    overflow: hidden; /* prevent double scrollbar when in an iframe */
+}
 html, body, #terminal {
     background: #2e3131;
     height: 100%;
